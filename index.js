@@ -95,6 +95,17 @@ async function run() {
       res.send(result);
     });
 
+    app.post('/classes', async (req, res) => {
+      const document = req.body;
+      const query = { email: document.instructorEmail };
+      const instructorInfo = await usersCollection.findOne(query);
+      const instructorId = instructorInfo._id;
+      
+      const classData = { ...document, instructorId };
+      const result = await classCollection.insertOne(classData);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
