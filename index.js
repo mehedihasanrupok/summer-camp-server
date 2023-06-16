@@ -100,9 +100,35 @@ async function run() {
       const query = { email: document.instructorEmail };
       const instructorInfo = await usersCollection.findOne(query);
       const instructorId = instructorInfo._id;
-      
+
       const classData = { ...document, instructorId };
       const result = await classCollection.insertOne(classData);
+      res.send(result);
+    });
+
+    app.patch('/classes/approved/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const document = req.body;
+      const updateDoc = {
+        $set: {
+          status: document.status,
+          enrollCount: 0
+        }
+      };
+      const result = await classCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+    app.patch('/classes/denied/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const document = req.body;
+      const updateDoc = {
+        $set: {
+          status: document.status
+        }
+      };
+      const result = await classCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
 
