@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.75vrxdv.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -66,7 +66,7 @@ async function run() {
       res.send(result);
     });
 
-    
+
     app.patch('/users/instructor/:id', async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
@@ -77,6 +77,21 @@ async function run() {
         }
       };
       const result = await usersCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
+    app.get('/users/admin/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      const result = { admin: user?.role === 'admin' };
+      res.send(result);
+    });
+    app.get('/users/instructor/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      const result = { instructor: user?.role === 'instructor' };
       res.send(result);
     });
 
