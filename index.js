@@ -132,6 +132,31 @@ async function run() {
       res.send(result);
     });
 
+    app.patch('/classes/feedback/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const document = req.body;
+      const updateDoc = {
+        $set: {
+          feedback: document.feedback
+        }
+      };
+      const result = await classCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
+    app.get('/instructors', async (req, res) => {
+      const query = { role: 'instructor' };
+      const result = await usersCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    app.get('/classes/approved', async (req, res) => {
+      const query = { status: 'approved' };
+      const result = await classCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
