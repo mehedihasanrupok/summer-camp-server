@@ -256,6 +256,20 @@ app.get('/enrolledClasses', async (req, res) => {
 	res.send(result);
 });
 
+app.get('/instructors/popular', async (req, res) => {
+  const query = { enrollCount: { $exists: true } };
+  const sort = { enrollCount: -1 };
+  const result = await usersCollection.find(query).sort(sort).limit(6).toArray();
+  res.send(result);
+});
+
+app.get('/classes/popular', async (req, res) => {
+  const query = { enrollCount: { $exists: true } };
+  const sort = { enrollCount: -1 };
+  const result = await classCollection.find(query).sort(sort).limit(6).toArray();
+  res.send(result);
+});
+
 //sk_test_51NJwlrA5xsC96HiQjaeDDrXIBhEl1SZoQmeJcDTYNmhBTtTpj8F4UL3JqrpmL5oylv2cD0you3PVSO7qMUCy27JC00xM4Eo6mF
 
     // Send a ping to confirm a successful connection
